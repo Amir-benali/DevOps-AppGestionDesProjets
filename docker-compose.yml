@@ -2,7 +2,6 @@ services:
 
   mysql:
     image: mysql:8.4
-    container_name: timesheet-mysql
     environment:
       MYSQL_DATABASE: test_db
       MYSQL_ROOT_PASSWORD: root
@@ -20,9 +19,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: timesheet-backend
     ports:
-      - "8082:8080"
+      - "${BACKEND_PORT:-8082}:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
@@ -43,9 +41,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: timesheet-frontend
     ports:
-      - "8083:80"
+      - "${FRONTEND_PORT:-8083}:80"
     depends_on:
       backend:
         condition: service_healthy

@@ -1,12 +1,12 @@
 pipeline {
     agent any
-    stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
 
+    environment {
+        BACKEND_PORT = '18082'
+        FRONTEND_PORT = '18083'
+    }
+
+    stages {
         stage('Build Docker Images') {
             steps {
                 sh 'docker compose build --pull'
@@ -24,7 +24,7 @@ pipeline {
                 sh '''
                     for attempt in $(seq 1 60); do
                         if curl --fail --silent http://localhost:8083/ > /dev/null \\
-                            && curl --fail --silent http://localhost:8082/entreprise/all > /dev/null; then
+                            && curl --fail --silent http://localhost:18082/entreprise/all > /dev/null; then
                             echo "Frontend and backend are responding."
                             exit 0
                         fi
